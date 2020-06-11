@@ -1,0 +1,136 @@
+from bidict import bidict
+
+################## FILE FORMAT ##################
+SQ_BYTECODE_STREAM_TAG  = b'\xfa\xfa'
+SQ_CLOSURESTREAM_HEAD   = b'RIQS'
+TRAP                    = b'TRAP'
+LIAT                    = b'LIAT'
+################## OPCODES ##################
+OPS = bidict(
+# Structs
+_OP_NEWSLOT     = 0x0B,
+_OP_DELETE      = 0x0C,
+_OP_SET         = 0x0D,
+_OP_GET         = 0x0E,
+
+# Loads
+_OP_LOAD        = 0x01,
+_OP_LOADINT     = 0x02,
+_OP_LOADFLOAT   = 0x03,
+_OP_DLOAD       = 0x04,
+
+# Calls
+_OP_TAILCALL    = 0x05,
+_OP_CALL        = 0x06,
+_OP_PREPCALL    = 0x07,
+_OP_PREPCALLK   = 0x08,
+_OP_RETURN      = 0x17,
+
+# Jumps
+_OP_JZ          = 0x1E,
+_OP_JMP         = 0x1C,
+_OP_JCMP        = 0x1D,
+
+# Comparisons
+_OP_EQ          = 0x0F,
+_OP_NE          = 0x10,
+
+# Boolean
+_OP_AND         = 0x2B,
+_OP_OR          = 0x2C,
+_OP_NOT         = 0x2E,
+
+# Bitwise
+_OP_BITW        = 0x16,
+_OP_BWNOT       = 0x2F,
+
+# Arithmetics
+_OP_ADD         = 0x11,
+_OP_SUB         = 0x12,
+_OP_MUL         = 0x13,
+_OP_DIV         = 0x14,
+_OP_MOD         = 0x15,
+_OP_NEG         = 0x2D,
+
+# Others
+_OP_LINE = 0x00,
+_OP_GETK = 0x09, 
+_OP_MOVE = 0x0A,
+_OP_LOADNULLS = 0x18,
+_OP_LOADROOT = 0x19,
+_OP_LOADBOOL = 0x1A,
+_OP_DMOVE = 0x1B,
+_OP_SETOUTER = 0x1F,
+_OP_GETOUTER = 0x20,
+_OP_NEWOBJ = 0x21,
+_OP_APPENDARRAY = 0x22,
+_OP_COMPARITH = 0x23,
+_OP_INC = 0x24,
+_OP_INCL = 0x25,
+_OP_PINC = 0x26,
+_OP_PINCL = 0x27,
+_OP_CMP = 0x28,
+_OP_EXISTS = 0x29,
+_OP_INSTANCEOF = 0x2A,
+_OP_CLOSURE = 0x30,
+_OP_YIELD = 0x31,
+_OP_RESUME = 0x32,
+_OP_FOREACH = 0x33,
+_OP_POSTFOREACH = 0x34,
+_OP_CLONE = 0x35,
+_OP_TYPEOF = 0x36,
+_OP_PUSHTRAP = 0x37,
+_OP_POPTRAP = 0x38,
+_OP_THROW = 0x39,
+_OP_NEWSLOTA = 0x3A,
+_OP_GETBASE = 0x3B,
+_OP_CLOSE = 0x3C,
+)
+
+################## TYPES ##################
+SQOBJECT_REF_COUNTED    = 0x08000000
+SQOBJECT_NUMERIC        = 0x04000000
+SQOBJECT_DELEGABLE      = 0x02000000
+SQOBJECT_CANBEFALSE     = 0x01000000
+
+SQ_MATCHTYPEMASKSTRING = (-99999)
+
+_RT_NULL            = 0x00000001
+_RT_INTEGER         = 0x00000002
+_RT_FLOAT           = 0x00000004
+_RT_BOOL            = 0x00000008
+_RT_STRING          = 0x00000010
+_RT_TABLE           = 0x00000020
+_RT_ARRAY           = 0x00000040
+_RT_USERDATA        = 0x00000080
+_RT_CLOSURE         = 0x00000100
+_RT_NATIVECLOSURE   = 0x00000200
+_RT_GENERATOR       = 0x00000400
+_RT_USERPOINTER     = 0x00000800
+_RT_THREAD          = 0x00001000
+_RT_FUNCPROTO       = 0x00002000
+_RT_CLASS           = 0x00004000
+_RT_INSTANCE        = 0x00008000
+_RT_WEAKREF         = 0x00010000
+_RT_OUTER           = 0x00020000
+
+TYPES = bidict(
+OT_NULL             = (_RT_NULL|SQOBJECT_CANBEFALSE),
+OT_INTEGER          = (_RT_INTEGER|SQOBJECT_NUMERIC|SQOBJECT_CANBEFALSE),
+OT_FLOAT            = (_RT_FLOAT|SQOBJECT_NUMERIC|SQOBJECT_CANBEFALSE),
+OT_BOOL             = (_RT_BOOL|SQOBJECT_CANBEFALSE),
+OT_STRING           = (_RT_STRING|SQOBJECT_REF_COUNTED),
+OT_TABLE            = (_RT_TABLE|SQOBJECT_REF_COUNTED|SQOBJECT_DELEGABLE),
+OT_ARRAY            = (_RT_ARRAY|SQOBJECT_REF_COUNTED),
+OT_USERDATA         = (_RT_USERDATA|SQOBJECT_REF_COUNTED|SQOBJECT_DELEGABLE),
+OT_CLOSURE          = (_RT_CLOSURE|SQOBJECT_REF_COUNTED),
+OT_NATIVECLOSURE    = (_RT_NATIVECLOSURE|SQOBJECT_REF_COUNTED),
+OT_GENERATOR        = (_RT_GENERATOR|SQOBJECT_REF_COUNTED),
+OT_USERPOINTER      = _RT_USERPOINTER,
+OT_THREAD           = (_RT_THREAD|SQOBJECT_REF_COUNTED),
+OT_FUNCPROTO        = (_RT_FUNCPROTO|SQOBJECT_REF_COUNTED), #internal usage only
+OT_CLASS            = (_RT_CLASS|SQOBJECT_REF_COUNTED),
+OT_INSTANCE         = (_RT_INSTANCE|SQOBJECT_REF_COUNTED|SQOBJECT_DELEGABLE),
+OT_WEAKREF          = (_RT_WEAKREF|SQOBJECT_REF_COUNTED),
+OT_OUTER            = (_RT_OUTER|SQOBJECT_REF_COUNTED) #internal usage only
+)
